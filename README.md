@@ -1,22 +1,36 @@
 # eye_tracking_project
 
+### Project Structure:
 
-clone the repesotory:
+    eye_tracking_project/
+    ├── eye_tracker.py          # Main implementation
+    ├── requirements.txt        # Python dependencies
+    ├── README.md            # Project documentation
+    └── tests/                         # Optional: unit tests
+        └── test_ear.py        # Test EAR calculation
 
-virtual env:
-python3 -m venv .venv
+### Installation 
 
-required packages:
-pip install opencv-python
-pip install mediapipe
-pip install numpy
-pip install scipy
+    1. clone the repesotory:
+
+    ```bash
+    git clone <repository-url>
+    cd eye_tracking_project
+    ```
+
+    2. creaye + activate virtual env:
+
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+    3. Required Dependencies:
+
+    ```bash
+    pip install opencv-python mediapipe numpy scipy
+    ```
 
 
-Project Structure:
-eye_tracking_project/
-├── eye_tracker.py          # Main implementation
-├── requirements.txt        # Python dependencies
-├── README.md            # Project documentation
-└── tests/                         # Optional: unit tests
-    └── test_ear.py        # Test EAR calculation
+
+
