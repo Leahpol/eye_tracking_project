@@ -3,6 +3,15 @@
 
 clone the repesotory:
 
+virtual env:
+python3 -m venv .venv
+
+required packages:
+pip install opencv-python
+pip install mediapipe
+pip install numpy
+pip install scipy
+
 
 Project Structure:
 eye_tracking_project/
