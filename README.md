@@ -9,7 +9,7 @@
     └── tests/                         # Optional: unit tests
         └── test_ear.py        # Test EAR calculation
 
-### Installation 
+### Installation: 
 
     1. clone the repesotory:
 
@@ -18,7 +18,7 @@
     cd eye_tracking_project
     ```
 
-    2. creaye + activate virtual env:
+    2. create + activate virtual env:
 
     ```bash
     python3 -m venv .venv
