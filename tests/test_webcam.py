@@ -1,16 +1,15 @@
-import numpy as np
 import cv2 as cv
+import numpy as np
 
 #initializing the webcam (1 is my computer)
 cap = cv.VideoCapture(1)
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
-
-while True:
+while cap.isOpened():
     # Capture frame-by-frame
-    ret, frame = cap.read()
-    if not ret:
+    success, frame = cap.read()
+    if not success:
         print("Failed to read frame")
         break
     # Display the frame
