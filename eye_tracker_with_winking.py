@@ -3,7 +3,7 @@ import cv2 as cv
 import numpy as np
 import time
 
-class EyeTracker:
+class EyeTrackerWithWinking:
 
         #constants
         RED = (48, 48, 255)
@@ -28,6 +28,8 @@ class EyeTracker:
                         min_tracking_confidence = 0.5)
                 # EAR threshold
                 self.threshold = threshold
+                self.left_EAR = 0.0
+                self.right_EAR = 0.0
                 # initial state of the eyes is unknown
                 self.eyes_state = ""
                 # counter for blinking
@@ -56,15 +58,15 @@ class EyeTracker:
                 L4 = eye_landmarks[3]
                 L5 = eye_landmarks[4]
                 L6 = eye_landmarks[5]
-                left_EAR = (self.euclidean_distance(L2, L6) + self.euclidean_distance(L3, L5)) / (2.0 * self.euclidean_distance(L1, L4))
+                self.left_EAR = (self.euclidean_distance(L2, L6) + self.euclidean_distance(L3, L5)) / (2.0 * self.euclidean_distance(L1, L4))
                 R1 = eye_landmarks[6]
                 R2 = eye_landmarks[7]
                 R3 = eye_landmarks[8]
                 R4 = eye_landmarks[9]
                 R5 = eye_landmarks[10]
                 R6 = eye_landmarks[11]
-                right_EAR = (self.euclidean_distance(R2, R6) + self.euclidean_distance(R3, R5)) / (2.0 * self.euclidean_distance(R1, R4))
-                avarage_EAR = (left_EAR + right_EAR) / 2.0
+                self.right_EAR = (self.euclidean_distance(R2, R6) + self.euclidean_distance(R3, R5)) / (2.0 * self.euclidean_distance(R1, R4))
+                avarage_EAR = (self.left_EAR + self.right_EAR) / 2.0
                 return avarage_EAR
                 
         def get_eye_landmarks(self, landmarks, indices, frame_w, frame_h):
@@ -98,8 +100,9 @@ class EyeTracker:
                 results = self.face_mesh.process(rgb_frame)
                 eye_landmarks = self.get_eye_landmarks(results.multi_face_landmarks, self.EYES, width, height)
                 avarage_EAR = self.calculate_ear(eye_landmarks)
-                self.eye_state_classifier(avarage_EAR, self.threshold, eye_landmarks, frame)
-                self.is_blinking()
+                if not self.is_winking(self.left_EAR, self.right_EAR, self.threshold, eye_landmarks, frame):
+                        self.eye_state_classifier_both_eyes(avarage_EAR, self.threshold, eye_landmarks, frame)
+                        self.is_blinking()
                 return frame
                 
         def run(self):
@@ -142,7 +145,7 @@ class EyeTracker:
                 distance = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
                 return distance
         
-        def eye_state_classifier(self, EAR, threshold, eye_landmarks, frame):
+        def eye_state_classifier_both_eyes(self, EAR, threshold, eye_landmarks, frame):
                 # Classifie eye state based on EAR and annotate frame, 
                 # Output eye state to console
 
@@ -163,6 +166,28 @@ class EyeTracker:
                         if self.eyes_state != "OPEN":
                                 self.eyes_state = "OPEN"
                                 print("The eyes are: " + self.eyes_state)
+        
+        def is_winking(self, left_EAR, right_EAR, threshold, eye_landmarks, frame):
+                # checks if the person is winking
+
+                #no face detected
+                if left_EAR == 0.0 or right_EAR == 0.0:
+                        return False
+                if left_EAR < threshold and not right_EAR < threshold and self.eyes_state != "CLOSED":
+                        cv.drawContours(frame, [np.array(eye_landmarks[:6], dtype=np.int32)], -1, self.RED, self.THICKNESS)
+                        cv.drawContours(frame, [np.array(eye_landmarks[6:], dtype=np.int32)], -1, self.GREEN, self.THICKNESS)
+                        if self.eyes_state != "WINKING with left eye":
+                                self.eyes_state = "WINKING with left eye"
+                                print(self.eyes_state)
+                        return True
+                elif right_EAR < threshold and not left_EAR < threshold and self.eyes_state != "CLOSED":
+                        cv.drawContours(frame, [np.array(eye_landmarks[:6], dtype=np.int32)], -1, self.GREEN, self.THICKNESS)
+                        cv.drawContours(frame, [np.array(eye_landmarks[6:], dtype=np.int32)], -1, self.RED, self.THICKNESS)
+                        if self.eyes_state != "WINKING with right eye":
+                                self.eyes_state = "WINKING with right eye"
+                                print(self.eyes_state)
+                        return True
+                return False
 
         def is_blinking(self):
                 # checks if the person blinked or just closed it's eyes
@@ -189,11 +214,12 @@ class EyeTracker:
                         self.minute_start_time = current_time
 
 if __name__ == "__main__":
-        tracker = EyeTracker()
+        tracker = EyeTrackerWithWinking()
         tracker.run()
        
 
         
                         
+
 
 
