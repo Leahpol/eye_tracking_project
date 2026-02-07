@@ -6,9 +6,7 @@ Real-time eye tracking system that detects and classifies eye states (open/close
 
 ### Features:
 
-- Real time eye contour overlay:
-    - Green overlay for **OPEN** eye
-    - Red overlay for **CLOSED** eye
+- Real time eye state detection with contour overlay (Open: green, Closed: red)
 - Winking detection (per eye state tracking)
 - Overall blinking frequnecy (blinks per minute) for the stream
 - Duration of the longest blink detected during the strem 
