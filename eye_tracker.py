@@ -8,6 +8,7 @@ class EyeTracker:
 	# constants
 	RED = (48, 48, 255)
 	GREEN = (48, 255, 48)
+	WHITE = (255, 255, 255)
 	THICKNESS = 1
 	LEFT_EYE_INDICES =  [362, 385, 387, 263, 373, 380]
 	RIGHT_EYE_INDICES = [33, 160, 158, 133, 153, 144]
@@ -30,6 +31,7 @@ class EyeTracker:
 		self.threshold = threshold
 		self.left_EAR = 0.0
 		self.right_EAR = 0.0
+		self.avarage_EAR = 0.0
 		# unkown eyes state 
 		self.eyes_state = ""
 		# counter for blinking
@@ -69,8 +71,9 @@ class EyeTracker:
 		R6 = eye_landmarks[11]
 		if self.euclidean_distance(R2, R6) != 0.0 and self.euclidean_distance(R3, R5) != 0.0 and self.euclidean_distance(R1, R4) != 0.0:
 			self.right_EAR = (self.euclidean_distance(R2, R6) + self.euclidean_distance(R3, R5)) / (2.0 * self.euclidean_distance(R1, R4))
-		avarage_EAR = (self.left_EAR + self.right_EAR) / 2.0
-		return avarage_EAR
+		self.avarage_EAR = (self.left_EAR + self.right_EAR) / 2.0
+		
+		return self.avarage_EAR
 			
 
 	def get_eye_landmarks(self, landmarks, indices, frame_w, frame_h):
@@ -103,9 +106,9 @@ class EyeTracker:
 		rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 		results = self.face_mesh.process(rgb_frame)
 		eye_landmarks = self.get_eye_landmarks(results.multi_face_landmarks, self.EYES, width, height)
-		avarage_EAR = self.calculate_ear(eye_landmarks)
+		self.avarage_EAR = self.calculate_ear(eye_landmarks)
 		if not self.is_winking(self.left_EAR, self.right_EAR, self.threshold, eye_landmarks, frame):
-			self.eye_state_classifier_both_eyes(avarage_EAR, self.threshold, eye_landmarks, frame)
+			self.eye_state_classifier_both_eyes(self.avarage_EAR, self.threshold, eye_landmarks, frame)
 			self.is_blinking()
 		return frame
 		
@@ -130,6 +133,9 @@ class EyeTracker:
 			annotated_frame = self.process_frame(frame)
 			# flip frame to mirror the user
 			mirror_frame = cv.flip(annotated_frame, 1)
+			# display EAR value
+			width, height, _ = mirror_frame.shape
+			cv.putText(mirror_frame, f"EAR: {self.avarage_EAR}",((int)(0.05 * width), (int)(0.10 * height)) , cv.FONT_HERSHEY_PLAIN, 2, self.WHITE, 2, cv.LINE_AA)
 			cv.imshow("Eyes Tracker", mirror_frame)
 			# press 'q' to quit the frame
 			if cv.waitKey(1) == ord('q'):
@@ -245,6 +251,3 @@ if __name__ == "__main__":
 
 	
 					
-
-
-
