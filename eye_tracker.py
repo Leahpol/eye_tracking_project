@@ -15,7 +15,7 @@ class EyeTracker:
 	EYES = LEFT_EYE_INDICES + RIGHT_EYE_INDICES
         
 
-	def __init__(self, threshold = 0.18):
+	def __init__(self, webcam_index = 0, threshold = 0.18):
 		# Initialize MediaPipe Face Mesh
 		# Set EAR threshold
 
@@ -27,6 +27,8 @@ class EyeTracker:
 			refine_landmarks = True, 
 			min_detection_confidence = 0.5,
 			min_tracking_confidence = 0.5)
+		# webcam index 
+		self.webcam_index = webcam_index
 		# EAR threshold
 		self.threshold = threshold
 		self.left_EAR = 0.0
@@ -117,8 +119,8 @@ class EyeTracker:
 		# Main loop: capture, process, display
 		# Handle keyboard input
 
-		# initializing the webcam (1 is my computer)
-		cap = cv.VideoCapture(1)
+		# initializing the webcam 
+		cap = cv.VideoCapture(self.webcam_index)
 		if not cap.isOpened():
 			print("Cannot open camera")
 			exit()

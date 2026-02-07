@@ -39,8 +39,9 @@ where:
 
 ### Classification Threshold:
 
-- EAR < 0.21 → Eyes CLOSED
-- EAR ≥ 0.21 → Eyes OPEN
+- EAR < 0.18 → Eyes CLOSED
+- EAR ≥ 0.18 → Eyes OPEN
+- can be changed with user input 
 
 ### MediaPipe Face Mesh Landmarks:
 
@@ -75,7 +76,7 @@ cd eye_tracking_project
 
 ```bash
 python3 -m venv venv
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 3. Install required Dependencies:
