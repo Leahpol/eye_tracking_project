@@ -53,7 +53,7 @@ where:
 - Right Eye: Indices [33, 160, 158, 133, 153, 144]
 
 
-## Project Structure:
+## Project Structure
 
     eye_tracking_project/
     ├── eye_tracker.py          # Main implementation
@@ -67,7 +67,7 @@ where:
         └── test_webcam.py          # Environment set up
 
 
-### Installation: 
+## Installation
 
 1. clone the repository:
 
@@ -89,16 +89,16 @@ source .venv/bin/activate
 pip install opencv-python mediapipe numpy scipy
 ```
 
-### Usage examples:
+## Usage examples
 
 ```bash
 python eye_tracker.py
 ```
 
-- Press 'q' stop the tracker 
+- Press 'q' to stop the tracker 
 
 
-### Known limitations:
+## Known limitations
 
 - Supports webcam video only
 - Sensitive to lighting conditions
