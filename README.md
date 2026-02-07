@@ -96,6 +96,7 @@ python eye_tracker.py
 ## Known limitations
 
 - Supports webcam video only
+- Detects one face 
 - Sensitive to lighting conditions
 - Winking detection may be inconsistent 
 
