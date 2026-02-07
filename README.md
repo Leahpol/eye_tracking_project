@@ -21,7 +21,7 @@ Real-time eye tracking system that detects and classifies eye states (open/close
 - Current EAR value
 - Frame counter
 - Console output:
-    - detection status
+    - Detection status
     - Overall blinking frequnecy (blinks per minute) for the stream
     - Duration of the longest blink detected during the strem 
 
