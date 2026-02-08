@@ -256,7 +256,7 @@ class EyeTracker:
 
 
 if __name__ == "__main__":
-	tracker = EyeTracker(1)
+	tracker = EyeTracker()
 	tracker.run()
 	
 
