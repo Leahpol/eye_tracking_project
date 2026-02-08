@@ -55,12 +55,13 @@ where:
     ├── eye_tracker.py          # Main implementation
     ├── requirements.txt        # Python dependencies
     ├── README.md               # Project documentation
-    └── tests/                  # tasks 1-5 independently 
-        ├── test_ear.py             # Test EAR calculation
-        ├── test_extract_eyes.py    # Eye landmark extraction
-        ├── test_eye_state.py       # Eye state Classification 
-        ├── test_face_mesh.py       # Face detection
-        └── test_webcam.py          # Environment set up
+    └── tests/                  # Functionality and unit tests
+        ├── test_ear.py             # Functionality of EAR calculation
+        ├── test_extract_eyes.py    # Functionality of Eye landmark extraction
+        ├── test_eye_state.py       # Functionality of Eye state Classification 
+        ├── test_face_mesh.py       # Functionality of Face detection
+        ├── test_webcam.py          # Functionality of Environment set up
+        └── u_tests.py              # unit tests
 
 
 ## Installation
@@ -93,6 +94,11 @@ python eye_tracker.py
 
 - Press 'q' to stop the tracker 
 
+## Testing
+
+```bash
+python -m unittest tests/u_tests.py
+```
 
 ## Known limitations
 
