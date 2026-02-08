@@ -105,7 +105,7 @@ python -m unittest tests/u_tests.py
 - Supports webcam video only
 - Detects one face 
 - Sensitive to lighting conditions
-- Winking detection may be inconsistent 
+- Winking detection may be inconsistent when not looking stright into the camera
 
 
 
