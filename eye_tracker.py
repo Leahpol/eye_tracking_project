@@ -38,6 +38,9 @@ class EyeTracker:
 		self.eyes_state = ""
 		# counter for blinking
 		self.blink_counter = 0
+		# for a person that starts with closed eyes
+		self.pass_first_closed = 0
+		self.pass_first_open = 0
 		# blinking flag
 		self.is_blink = False
 		# start time of the the current minute
@@ -174,9 +177,14 @@ class EyeTracker:
 
 		# when no face is detected
 		if EAR == 0.0: 
-			self.eyes_state = ""
+			if self.eyes_state != "face not detected":
+				self.eyes_state = "face not detected"
+				print(self.eyes_state)
+			self.pass_first_closed = 0
+			self.pass_first_open = 0
 			return
 		elif EAR < threshold:
+			self.pass_first_closed += 1
 			cv.drawContours(frame, [np.array(eye_landmarks[:6], dtype=np.int32)], -1, self.RED, self.THICKNESS)
 			cv.drawContours(frame, [np.array(eye_landmarks[6:], dtype=np.int32)], -1, self.RED, self.THICKNESS)
 			if self.eyes_state != "CLOSED":
@@ -185,6 +193,7 @@ class EyeTracker:
 				self.eyes_state = "CLOSED"
 				print("The eyes are: " + self.eyes_state)
 		else:
+			self.pass_first_open += 1
 			cv.drawContours(frame, [np.array(eye_landmarks[:6], dtype=np.int32)], -1, self.GREEN, self.THICKNESS)
 			cv.drawContours(frame, [np.array(eye_landmarks[6:], dtype=np.int32)], -1, self.GREEN, self.THICKNESS)
 			if self.eyes_state != "OPEN":
@@ -224,7 +233,7 @@ class EyeTracker:
 
 		if self.eyes_state == "OPEN":
 			# only when eyes were closed before
-			if self.is_blink :
+			if self.is_blink and self.pass_first_open > 1 and self.pass_first_closed >= 1:
 				blink_duration = time.time() - self.start_blink_time
 				if blink_duration > self.blink_time:
 					self.blink_time = blink_duration
@@ -247,7 +256,7 @@ class EyeTracker:
 
 
 if __name__ == "__main__":
-	tracker = EyeTracker()
+	tracker = EyeTracker(1)
 	tracker.run()
 	
 

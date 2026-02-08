@@ -2,6 +2,7 @@ import unittest
 import cv2 as cv
 import mediapipe as mp
 import numpy as np
+import time
 from eye_tracker import EyeTracker
 
 class TestEyeTracker(unittest.TestCase):
@@ -24,7 +25,7 @@ class TestEyeTracker(unittest.TestCase):
     def test_eye_state(self):
 
         ear_values  = [0.18, 0.08, 0.2, 0.0]  
-        expected_eyes_states = ["OPEN", "CLOSED", "OPEN", ""]
+        expected_eyes_states = ["OPEN", "CLOSED", "OPEN", "face not detected"]
         eyes_states = []
         for ear in ear_values:
             self.tracker.eye_state_classifier_both_eyes(ear, 0.18, self.eye_landmarks, self.frame)
@@ -43,22 +44,37 @@ class TestEyeTracker(unittest.TestCase):
 
     def test_blinking(self):
 
+        self.tracker.start_blink_time = time.time()
+        self.tracker.pass_first_open = 0
+        self.tracker.pass_first_closed = 0
+        #normal blinking
         self.tracker.eyes_state = "OPEN"
         self.tracker.is_blinking()
         self.assertFalse(self.tracker.is_blink)
         self.tracker.eyes_state = "CLOSED"
+        self.tracker.pass_first_open = 2
+        self.tracker.pass_first_closed = 1
         self.tracker.is_blinking()
         self.assertTrue(self.tracker.is_blink)
         self.tracker.eyes_state = "OPEN"
         self.tracker.is_blinking()
         self.assertFalse(self.tracker.is_blink)
         self.assertEqual(self.tracker.blink_counter, 1)
-        self.tracker.eyes_state = ""
+        # closed eyes, face not detected, open eyes again
+        self.tracker.eyes_state = "face not detected"
         self.tracker.is_blinking()
         self.assertFalse(self.tracker.is_blink)
         self.tracker.eyes_state = "CLOSED"
         self.tracker.is_blinking()
         self.tracker.eyes_state = ""
+        self.tracker.is_blinking()
+        self.tracker.eyes_state = "OPEN"
+        self.tracker.is_blinking()
+        self.assertEqual(self.tracker.blink_counter, 1)
+        # closed eyes (sleeping), open eyes (wake up)
+        self.tracker.pass_first_open = 0
+        self.tracker.pass_first_closed = 0
+        self.tracker.eyes_state = "CLOSED"
         self.tracker.is_blinking()
         self.tracker.eyes_state = "OPEN"
         self.tracker.is_blinking()
